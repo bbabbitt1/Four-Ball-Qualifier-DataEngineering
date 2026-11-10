@@ -1,0 +1,11 @@
+{
+  "QueueConfigurations": [{
+    "Id": "snowpipe-scores",
+    "QueueArn": "arn:aws:sqs:us-east-1:938050482062:sf-snowpipe-AIDA5U2BKN6HGYVHBTNTW-kP01xqm_CcoeQmro33CTOA",
+    "Events": ["s3:ObjectCreated:*"],
+    "Filter": { "Key": { "FilterRules": [
+      { "Name": "prefix", "Value": "scores/" },
+      { "Name": "suffix", "Value": ".csv" }
+    ]}}
+  }]
+}
