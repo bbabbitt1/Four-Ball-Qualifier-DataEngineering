@@ -1,4 +1,4 @@
-"""Upload score CSVs that aren't already in the bucket, then overwrite the dims (small, and they change in place)."""
+"""Upload score CSVs that aren't already in the bucket, then overwrite the dims + inventory (small, and they change in place)."""
 from pathlib import Path
 
 import boto3
@@ -22,3 +22,8 @@ print(f"{len(new)} new file(s) uploaded, {len(existing)} already in bucket.")
 for name in ("dim_golf_course.csv", "dim_golf_course_holes.csv"):
     s3.upload_file(str(BRONZE / name), BUCKET, f"dims/{name}")
     print(f"Uploaded {name} -> s3://{BUCKET}/dims/{name}")
+
+# Every known site per season incl. ones without results yet (upcoming / manual / source_gone)
+for path in sorted((BRONZE.parent / "inventory").glob("*-fourball.json")):
+    s3.upload_file(str(path), BUCKET, f"inventory/{path.name}")
+    print(f"Uploaded {path.name} -> s3://{BUCKET}/inventory/{path.name}")

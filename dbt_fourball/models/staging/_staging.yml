@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: stg_scores
+    description: Typed, de-varianted scores. One row per side per qualifier.
+    columns:
+      - name: side_id
+        data_tests: [unique, not_null]
+      - name: outcome
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [qualified, alternate, cut, no_score, unknown]
+      - name: gross
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 55
+                max_value: 110
+  - name: stg_courses
+    columns:
+      - name: course_id
+        data_tests: [unique, not_null]
+  - name: stg_course_holes
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [course_id, tees, hole]
+  - name: stg_qualifiers
+    description: Every known qualifier site from the inventory, scraped or not.
+    columns:
+      - name: qualifier_key
+        data_tests: [unique, not_null]
+      - name: scrape_status
+        data_tests: [not_null]

@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: raw
+    database: RAW
+    schema: FOURBALL
+    description: Loaded by snowflake/load.sql + SCORES_PIPE. All VARCHAR; typing happens in staging.
+    tables:
+      - name: scores
+        description: One row per side per qualifier. Union of every scraper header variant (quoted lowercase/mixed-case columns).
+      - name: dim_golf_course
+      - name: dim_golf_course_holes
+      - name: inventory
+        description: One row per season file (data/inventory/*.json). V:sites[] = every known site, incl. ones without results.

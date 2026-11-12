@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: fct_side_result
+    description: One row per side per qualifier (all sides, including WD/NS).
+    columns:
+      - name: side_id
+        data_tests: [unique, not_null]
+      - name: qualifier_key
+        data_tests:
+          - relationships:
+              arguments: {to: ref('dim_qualifier'), field: qualifier_key}
+      - name: course_id
+        data_tests:
+          - relationships:
+              arguments: {to: ref('dim_course'), field: course_id}
+  - name: dim_qualifier
+    columns:
+      - name: qualifier_key
+        data_tests: [unique, not_null]
+  - name: dim_course
+    columns:
+      - name: course_id
+        data_tests: [unique, not_null]
+  - name: dim_player
+    columns:
+      - name: player_key
+        data_tests: [unique, not_null]
+  - name: bridge_side_player
+    columns:
+      - name: side_id
+        data_tests:
+          - relationships:
+              arguments: {to: ref('fct_side_result'), field: side_id}
+  - name: fct_side_score_stats
+    description: >
+      One row per completed side. Distance from field mean/median, z-score (mean/stddev), robust z (median/MAD),
+      rank and percentile within the field, strokes from the qualifying score, season and all-time position on to-par.
+      Negative = better than the field.
+    columns:
+      - name: side_id
+        data_tests: [unique, not_null]
+  - name: agg_qualifier_score_stats
+    description: One row per qualifier. Score distribution, qualifying score, best non-qualifying score, field strength.
+    columns:
+      - name: qualifier_key
+        data_tests: [unique, not_null]
+  - name: agg_score_rarity
+    description: One row per to-par value. How many sides ever shot it, how many missed with it, % of sites it would have qualified at.
+    columns:
+      - name: to_par
+        data_tests: [unique, not_null]
+  - name: dim_team
+    description: One row per pair of players (alphabetical names, hometown ignored), across all years.
+    columns:
+      - name: team_key
+        data_tests: [unique, not_null]
