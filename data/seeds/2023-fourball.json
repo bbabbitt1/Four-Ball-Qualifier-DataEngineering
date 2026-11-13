@@ -1,0 +1,347 @@
+{
+  "year": 2023,
+  "sites": [
+    {
+      "name": "Oldfield Club",
+      "city": "Okatie",
+      "state": "SC",
+      "date": "2022-12-12",
+      "scoringUrl": "https://www.golfgenius.com/pages/3425303",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "manual"
+    },
+    {
+      "name": "Bradenton Country Club",
+      "city": "Bradenton",
+      "state": "FL",
+      "date": "2022-12-12",
+      "scoringUrl": "https://www.golfgenius.com/pages/3799625",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Rams Hill Golf Club",
+      "city": "Borrego Springs",
+      "state": "CA",
+      "date": "2022-12-01",
+      "scoringUrl": "https://www.golfgenius.com/pages/3367608",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Sunriver Golf Club",
+      "city": "St. George",
+      "state": "UT",
+      "date": "2022-11-14",
+      "scoringUrl": "https://www.golfgenius.com/pages/3833625",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "The Woodlands Country Club (Player Course)",
+      "city": "The Woodlands",
+      "state": "TX",
+      "date": "2022-11-09",
+      "scoringUrl": "https://www.golfgenius.com/pages/3383309",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "manual"
+    },
+    {
+      "name": "Golden Ocala Golf & Equestrian Club",
+      "city": "Ocala",
+      "state": "FL",
+      "date": "2022-11-07",
+      "scoringUrl": "https://www.golfgenius.com/pages/8827822409089293462",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Puakea Golf Course",
+      "city": "Lihue",
+      "state": "HI",
+      "date": "2022-10-25",
+      "scoringUrl": "https://www.golfgenius.com/pages/3238503",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "manual"
+    },
+    {
+      "name": "Nicklaus Golf Club at Lionsgate",
+      "city": "Overland Park",
+      "state": "KS",
+      "date": "2022-10-24",
+      "scoringUrl": "https://www.golfgenius.com/pages/3686258",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Monarch Dunes Golf Club",
+      "city": "Nipomo",
+      "state": "CA",
+      "date": "2022-10-17",
+      "scoringUrl": "https://www.golfgenius.com/pages/3367509",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Whitemarsh Valley Country Club",
+      "city": "Whitemarsh Township",
+      "state": "PA",
+      "date": "2022-10-11",
+      "scoringUrl": "https://gap-8thusamateurfourballqualifying.golfgenius.com/pages/3463046",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Berkeley Hills Country Club",
+      "city": "Duluth",
+      "state": "GA",
+      "date": "2022-10-10",
+      "scoringUrl": "https://www.golfgenius.com/pages/3384514",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "The Cardinal By Pete Dye",
+      "city": "Greensboro",
+      "state": "NC",
+      "date": "2022-10-10",
+      "scoringUrl": "https://www.golfgenius.com/pages/3426216",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "manual"
+    },
+    {
+      "name": "Winter Creek Golf & Social Club",
+      "city": "Blythewood",
+      "state": "SC",
+      "date": "2022-10-10",
+      "scoringUrl": "https://www.golfgenius.com/pages/3790803",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "manual"
+    },
+    {
+      "name": "Country Club of Petersburg",
+      "city": "Petersburg",
+      "state": "VA",
+      "date": "2022-10-10",
+      "scoringUrl": "https://www.golfgenius.com/pages/3432771",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Landmand Golf Club",
+      "city": "Homer",
+      "state": "NE",
+      "date": "2022-10-07",
+      "scoringUrl": "https://www.golfgenius.com/pages/3742249",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Catawba Island Club",
+      "city": "",
+      "state": "OH",
+      "date": "2022-10-06",
+      "scoringUrl": "https://www.golfgenius.com/pages/3320506",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Warwick Hills Golf & Country Club",
+      "city": "Grand Blanc",
+      "state": "MI",
+      "date": "2022-10-05",
+      "scoringUrl": "https://www.golfgenius.com/pages/8833915467061054066",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Arroyo Trabuco Golf Club",
+      "city": "Mission Viejo",
+      "state": "CA",
+      "date": "2022-10-04",
+      "scoringUrl": "https://www.golfgenius.com/pages/3366990",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Willowbrook Country Club",
+      "city": "Apollo",
+      "state": "PA",
+      "date": "2022-10-03",
+      "scoringUrl": "https://www.golfgenius.com/pages/3758958",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Chaska Town Course",
+      "city": "Chaska",
+      "state": "MN",
+      "date": "2022-10-03",
+      "scoringUrl": "https://www.golfgenius.com/pages/3327865",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Country Club of Lexington",
+      "city": "",
+      "state": "SC",
+      "date": "2022-10-03",
+      "scoringUrl": "https://www.golfgenius.com/pages/3425267",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Silver Spring Country Club",
+      "city": "Ridgefield",
+      "state": "CT",
+      "date": "2022-10-03",
+      "scoringUrl": "https://www.golfgenius.com/pages/3462906",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Brookfield Country Club",
+      "city": "Clarence",
+      "state": "NY",
+      "date": "2022-09-29",
+      "scoringUrl": "https://www.golfgenius.com/pages/3779991",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Commonground Golf Course",
+      "city": "Aurora",
+      "state": "CO",
+      "date": "2022-09-28",
+      "scoringUrl": "https://www.golfgenius.com/pages/3508181",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Shuttle Meadow Country Club",
+      "city": "Berlin",
+      "state": "CT",
+      "date": "2022-09-26",
+      "scoringUrl": "https://csga-qualifying8thusamateurfourballkensi.golfgenius.com/pages/3769894",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Mccormick Woods Golf Club",
+      "city": "Port Orchard",
+      "state": "WA",
+      "date": "2022-09-26",
+      "scoringUrl": "https://www.golfgenius.com/pages/3349904",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Indian Creek Golf Club (Creeks Course)",
+      "city": "Carrollton",
+      "state": "TX",
+      "date": "2022-09-20",
+      "scoringUrl": "https://tga-2023usamateurfourballindiancreekgc.golfgenius.com/pages/3383664",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "manual"
+    },
+    {
+      "name": "Laurel Links Country Club",
+      "city": "Town of Southold",
+      "state": "NY",
+      "date": "2022-09-19",
+      "scoringUrl": "https://www.golfgenius.com/pages/3462668",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Arizona Country Club",
+      "city": "Phoenix",
+      "state": "AZ",
+      "date": "2022-09-19",
+      "scoringUrl": "https://aga-2022usamateurfourballqualifierarizon.golfgenius.com/pages/3414725",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Point Judith Country Club",
+      "city": "Narragansett",
+      "state": "RI",
+      "date": "2022-09-13",
+      "scoringUrl": "https://riga-8thusamateurfourballsectionalqualif.golfgenius.com/pages/3395168",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "OGA Golf Course",
+      "city": "Woodburn",
+      "state": "OR",
+      "date": "2022-09-12",
+      "scoringUrl": "https://22usamateurfourballq-woodburn.golfgenius.com/pages/3446229",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Lago Mar Country Club",
+      "city": "Plantation",
+      "state": "FL",
+      "date": "2022-09-12",
+      "scoringUrl": "https://www.golfgenius.com/pages/8729366236116315242",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "North Jersey Country Club",
+      "city": "Wayne",
+      "state": "NJ",
+      "date": "2022-09-12",
+      "scoringUrl": "https://www.golfgenius.com/pages/3364716",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Waubeeka Golf Links",
+      "city": "Williamstown",
+      "state": "MA",
+      "date": "2022-09-12",
+      "scoringUrl": "https://www.golfgenius.com/pages/3757363",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Worthington Manor Golf Club",
+      "city": "Urbana",
+      "state": "MD",
+      "date": "2022-09-06",
+      "scoringUrl": "https://www.golfgenius.com/pages/8181742371550055739",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Oasis Golf Club",
+      "city": "Loveland",
+      "state": "OH",
+      "date": "2022-08-29",
+      "scoringUrl": "https://www.golfgenius.com/pages/3307305",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Lady Bird Johnson Municipal Golf Course",
+      "city": "Fredericksburg",
+      "state": "TX",
+      "date": "2022-08-29",
+      "scoringUrl": "https://www.golfgenius.com/pages/3756974",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Greathorse",
+      "city": "Hampden",
+      "state": "MA",
+      "date": "2022-08-25",
+      "scoringUrl": "https://www.golfgenius.com/pages/3747941",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    }
+  ]
+}
