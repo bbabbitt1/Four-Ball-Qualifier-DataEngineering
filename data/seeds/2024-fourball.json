@@ -1,0 +1,374 @@
+{
+  "year": 2024,
+  "sites": [
+    {
+      "name": "Oldfield Club",
+      "city": "Okatie",
+      "state": "SC",
+      "date": "2023-12-11",
+      "scoringUrl": "https://www.golfgenius.com/pages/3990708",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "manual"
+    },
+    {
+      "name": "Bradenton Country Club",
+      "city": "Bradenton",
+      "state": "FL",
+      "date": "2023-12-11",
+      "scoringUrl": "https://www.golfgenius.com/pages/9970202425522396543",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "El Caballero Country Club",
+      "city": "Los Angeles",
+      "state": "CA",
+      "date": "2023-12-11",
+      "scoringUrl": "https://www.golfgenius.com/pages/4019662",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Bloomington Country Club",
+      "city": "Bloomington",
+      "state": "IL",
+      "date": "2023-11-13",
+      "scoringUrl": "https://www.golfgenius.com/pages/3982014",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Golden Ocala Golf & Equestrian Club",
+      "city": "Ocala",
+      "state": "FL",
+      "date": "2023-11-06",
+      "scoringUrl": "https://www.golfgenius.com/pages/9364500439174749641",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Oak Hills Country Club",
+      "city": "San Antonio",
+      "state": "TX",
+      "date": "2023-11-06",
+      "scoringUrl": "https://www.golfgenius.com/pages/4354300",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "The Cardinal By Pete Dye",
+      "city": "Greensboro",
+      "state": "NC",
+      "date": "2023-10-23",
+      "scoringUrl": "https://www.golfgenius.com/pages/3990522",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "manual"
+    },
+    {
+      "name": "Big Creek Golf & Country Club",
+      "city": "Mountain Home",
+      "state": "AR",
+      "date": "2023-10-18",
+      "scoringUrl": "https://www.golfgenius.com/pages/4029150",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "manual"
+    },
+    {
+      "name": "Puakea Golf Course",
+      "city": "Lihue",
+      "state": "HI",
+      "date": "2023-10-17",
+      "scoringUrl": "https://www.golfgenius.com/pages/3892991",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Bayou Oaks at City Park",
+      "city": "New Orleans",
+      "state": "LA",
+      "date": "2023-10-16",
+      "scoringUrl": "https://www.golfgenius.com/pages/4421606",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "manual"
+    },
+    {
+      "name": "Noyac Golf Club",
+      "city": "Town of Southampton",
+      "state": "NY",
+      "date": "2023-10-10",
+      "scoringUrl": "https://www.golfgenius.com/pages/3980651",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Warwick Hills Golf & Country Club",
+      "city": "Grand Blanc",
+      "state": "MI",
+      "date": "2023-10-04",
+      "scoringUrl": "https://www.golfgenius.com/pages/9115132774892751430",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Country Club of Wilbraham",
+      "city": "Wilbraham",
+      "state": "MA",
+      "date": "2023-10-03",
+      "scoringUrl": "https://www.golfgenius.com/pages/4345262",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Westmoreland Country Club",
+      "city": "Export",
+      "state": "PA",
+      "date": "2023-10-02",
+      "scoringUrl": "https://www.golfgenius.com/pages/4042133",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Mendakota Country Club",
+      "city": "Mendota Heights",
+      "state": "MN",
+      "date": "2023-10-02",
+      "scoringUrl": "https://www.golfgenius.com/pages/4003734",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Monarch Dunes Golf Club",
+      "city": "Nipomo",
+      "state": "CA",
+      "date": "2023-10-02",
+      "scoringUrl": "https://www.golfgenius.com/pages/4019638",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Indian Summer Golf & Country Club",
+      "city": "Olympia",
+      "state": "WA",
+      "date": "2023-10-02",
+      "scoringUrl": "https://www.golfgenius.com/pages/3881690",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "manual"
+    },
+    {
+      "name": "Country Club of Petersburg",
+      "city": "Petersburg",
+      "state": "VA",
+      "date": "2023-10-02",
+      "scoringUrl": "https://www.golfgenius.com/pages/4290373",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Wiltwyck Golf Club",
+      "city": "City of Kingston",
+      "state": "NY",
+      "date": "2023-09-27",
+      "scoringUrl": "https://www.golfgenius.com/pages/3980640",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Walden on Lake Conroe",
+      "city": "Conroe",
+      "state": "TX",
+      "date": "2023-09-25",
+      "scoringUrl": "https://www.golfgenius.com/pages/4354339",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Mesa Country Club",
+      "city": "Mesa",
+      "state": "AZ",
+      "date": "2023-09-21",
+      "scoringUrl": "https://www.golfgenius.com/pages/4021182",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Wanakah Country Club",
+      "city": "Hamburg",
+      "state": "NY",
+      "date": "2023-09-19",
+      "scoringUrl": "https://www.golfgenius.com/pages/4023361",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Desert Canyon Golf Course",
+      "city": "Fountain Hills",
+      "state": "AZ",
+      "date": "2023-09-19",
+      "scoringUrl": "https://www.golfgenius.com/pages/4091584",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Torrington Country Club",
+      "city": "Goshen",
+      "state": "CT",
+      "date": "2023-09-18",
+      "scoringUrl": "https://www.golfgenius.com/pages/4369433",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Keystone Ranch Golf Course",
+      "city": "",
+      "state": "CO",
+      "date": "2023-09-18",
+      "scoringUrl": "https://www.golfgenius.com/pages/4084439",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Enagic Golf Club at Eastlake",
+      "city": "Chula Vista",
+      "state": "CA",
+      "date": "2023-09-13",
+      "scoringUrl": "https://www.golfgenius.com/pages/4019526",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Point Judith Country Club",
+      "city": "Narragansett",
+      "state": "RI",
+      "date": "2023-09-12",
+      "scoringUrl": "https://www.golfgenius.com/pages/4392315",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Worthington Manor Golf Club",
+      "city": "Urbana",
+      "state": "MD",
+      "date": "2023-09-12",
+      "scoringUrl": "https://www.golfgenius.com/pages/9172566295634300176",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Indian Valley Country Club",
+      "city": "Franconia",
+      "state": "PA",
+      "date": "2023-09-11",
+      "scoringUrl": "https://www.golfgenius.com/pages/3882527",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Lago Mar Country Club",
+      "city": "Plantation",
+      "state": "FL",
+      "date": "2023-09-11",
+      "scoringUrl": "https://www.golfgenius.com/pages/9364481462130208096",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Old Fort Golf Club",
+      "city": "Murfreesboro",
+      "state": "TN",
+      "date": "2023-09-07",
+      "scoringUrl": "https://www.golfgenius.com/pages/3996947",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "manual"
+    },
+    {
+      "name": "Catawba Island Club",
+      "city": "",
+      "state": "OH",
+      "date": "2023-09-07",
+      "scoringUrl": "https://www.golfgenius.com/pages/3890452",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Arrowhead Golf Club",
+      "city": "Molalla",
+      "state": "OR",
+      "date": "2023-09-05",
+      "scoringUrl": "https://www.golfgenius.com/pages/4001947",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Rumson Country Club",
+      "city": "Rumson",
+      "state": "NJ",
+      "date": "2023-09-05",
+      "scoringUrl": "https://www.golfgenius.com/pages/4345893",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Bayberry Hills Golf Course",
+      "city": "Yarmouth",
+      "state": "MA",
+      "date": "2023-08-29",
+      "scoringUrl": "https://www.golfgenius.com/pages/4337392",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Cedar Rapids Country Club",
+      "city": "Cedar Rapids",
+      "state": "IA",
+      "date": "2023-08-28",
+      "scoringUrl": "https://www.golfgenius.com/pages/3919107",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Diamond Oaks Country Club",
+      "city": "Fort Worth",
+      "state": "TX",
+      "date": "2023-08-28",
+      "scoringUrl": "https://www.golfgenius.com/pages/4345189",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Tiffany Greens Golf Club",
+      "city": "Kansas City",
+      "state": "MO",
+      "date": "2023-08-28",
+      "scoringUrl": "https://www.golfgenius.com/pages/4342118",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Oasis Golf Club",
+      "city": "Loveland",
+      "state": "OH",
+      "date": "2023-08-28",
+      "scoringUrl": "https://www.golfgenius.com/pages/3862320",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "inventory"
+    },
+    {
+      "name": "Mountain Falls Golf Club",
+      "city": "Pahrump",
+      "state": "NV",
+      "date": "2023-08-28",
+      "scoringUrl": "https://www.golfgenius.com/pages/3978043",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    },
+    {
+      "name": "Elkview Country Club",
+      "city": "Greenfield Township",
+      "state": "PA",
+      "date": "2023-08-21",
+      "scoringUrl": "https://www.golfgenius.com/pages/3975492",
+      "source": "Four-Ball-Scores/golf_genius_all_years.csv",
+      "state_source": "nominatim"
+    }
+  ]
+}

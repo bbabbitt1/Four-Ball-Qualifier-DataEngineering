@@ -33,3 +33,8 @@ models:
         data_tests: [unique, not_null]
       - name: scrape_status
         data_tests: [not_null]
+  - name: stg_wagr
+    description: Men's WAGR per ranking week. One row per (week, name); ambiguous same-name players dropped.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments: {combination_of_columns: [wagr_week, player_name]}

@@ -36,6 +36,9 @@ per_qualifier as (
 select
     *,
     spots / field_size_scored as qualify_rate,
+    -- how far below the field you had to go to get through (negative = better than the field mean)
+    qualifying_score - mean_gross as qualifying_vs_mean,
+    (qualifying_score - mean_gross) / nullif(stddev_gross, 0) as qualifying_z,
     -- negative = this field scored better than the season average (tougher to get through)
     mean_to_par - sum(mean_to_par * field_size_scored) over (partition by championship_year)
                   / sum(field_size_scored) over (partition by championship_year) as field_strength

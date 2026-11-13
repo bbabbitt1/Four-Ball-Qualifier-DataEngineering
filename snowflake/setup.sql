@@ -82,6 +82,12 @@ CREATE TABLE IF NOT EXISTS DIM_GOLF_COURSE_HOLES (
 -- One row per inventory file (one per season); dbt flattens sites[]
 CREATE TABLE IF NOT EXISTS INVENTORY (V VARIANT, "_FILE" VARCHAR, "_LOADED_AT" TIMESTAMP_LTZ);
 
+-- One file per WAGR ranking week (wagr.py); one row per ranked man
+CREATE TABLE IF NOT EXISTS WAGR (
+  "WAGR_WEEK" VARCHAR, "PLAYER_ID" VARCHAR, "RANK" VARCHAR, "FIRST_NAME" VARCHAR, "LAST_NAME" VARCHAR,
+  "FULL_NAME" VARCHAR, "NATIONALITY" VARCHAR, "POINTS_AVG" VARCHAR,
+  "_FILE" VARCHAR, "_LOADED_AT" TIMESTAMP_LTZ);
+
 GRANT ALL ON ALL TABLES IN SCHEMA RAW.FOURBALL TO ROLE LOADER;
 
 ------------------------------------------------------------------------
@@ -98,3 +104,43 @@ CREATE PIPE IF NOT EXISTS SCORES_PIPE AUTO_INGEST = TRUE AS
     MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE
     INCLUDE_METADATA = (_FILE = METADATA$FILENAME, _LOADED_AT = METADATA$START_SCAN_TIME);
 SHOW PIPES;
+
+------------------------------------------------------------------------
+-- 6. Fabric reader: read-only login that Fabric mirroring uses on FOURBALL_PROD.MARTS.
+-- Own role + warehouse so reporting can't write anything and its compute cost shows up on its own.
+-- Mirroring reads changes through Snowflake streams, so it needs CREATE STREAM, and the marts
+-- need CHANGE_TRACKING (set by a dbt post-hook in dbt_project.yml, because dbt recreates the tables).
+------------------------------------------------------------------------
+USE ROLE SYSADMIN;
+CREATE WAREHOUSE IF NOT EXISTS REPORTING_WH
+  WAREHOUSE_SIZE = XSMALL AUTO_SUSPEND = 60 AUTO_RESUME = TRUE INITIALLY_SUSPENDED = TRUE;
+
+USE ROLE SECURITYADMIN;
+CREATE ROLE IF NOT EXISTS FABRIC_READER;
+GRANT ROLE FABRIC_READER TO ROLE SYSADMIN;
+
+GRANT USAGE ON WAREHOUSE REPORTING_WH TO ROLE FABRIC_READER;
+GRANT USAGE ON DATABASE FOURBALL_PROD TO ROLE FABRIC_READER;
+GRANT USAGE ON SCHEMA FOURBALL_PROD.MARTS TO ROLE FABRIC_READER;
+GRANT CREATE STREAM ON SCHEMA FOURBALL_PROD.MARTS TO ROLE FABRIC_READER;
+GRANT SELECT ON ALL TABLES IN SCHEMA FOURBALL_PROD.MARTS TO ROLE FABRIC_READER;
+-- dbt drops and recreates every mart on each build; future grants re-apply SELECT to the new table
+GRANT SELECT ON FUTURE TABLES IN SCHEMA FOURBALL_PROD.MARTS TO ROLE FABRIC_READER;
+
+-- Service user (no interactive login). Key-pair auth, like the dbt user:
+--   openssl genrsa 2048 | openssl pkcs8 -topk8 -v2 des3 -inform PEM -out fabric_reader.p8
+--   openssl rsa -in fabric_reader.p8 -pubout -out fabric_reader.pub
+-- Paste the .pub body (no BEGIN/END lines) below. Keep the .p8 out of the repo.
+-- If the Fabric Snowflake connection only offers username/password, use TYPE = LEGACY_SERVICE and
+-- PASSWORD = '...' instead, but Snowflake is phasing out password-only logins.
+CREATE USER IF NOT EXISTS FABRIC_SVC
+  TYPE = SERVICE
+  RSA_PUBLIC_KEY = '<paste fabric_reader.pub body>'
+  DEFAULT_ROLE = FABRIC_READER
+  DEFAULT_WAREHOUSE = REPORTING_WH
+  DEFAULT_NAMESPACE = FOURBALL_PROD.MARTS
+  COMMENT = 'Fabric mirroring of FOURBALL_PROD.MARTS (read-only)';
+GRANT ROLE FABRIC_READER TO USER FABRIC_SVC;
+
+-- Check: should list SELECT on every mart + CREATE STREAM on the schema
+SHOW GRANTS TO ROLE FABRIC_READER;
