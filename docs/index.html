@@ -100,6 +100,42 @@ dialog::backdrop { background: rgb(0 0 0 / 0.35); }
 .w input[type="number"] { min-height: 34px; padding: 4px 8px; text-align: right; font-family: var(--mono); }
 .total { font: 500 0.9rem var(--mono); }
 .icon-btn { min-height: 40px; min-width: 40px; padding: 0; display: inline-grid; place-items: center; }
+
+/* clickable numbers -> breakdown */
+button.cell { all: unset; cursor: pointer; font: inherit; border-bottom: 1px dotted var(--muted); border-radius: 2px; }
+button.cell:hover { color: var(--accent); border-bottom-color: var(--accent); }
+button.cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* centered modals: glossary + breakdown */
+dialog.modal { margin: auto; width: min(680px, calc(100% - 32px)); max-height: min(86vh, 900px); height: fit-content; border: 1px solid var(--line);
+  border-radius: 10px; padding: 0; overflow: hidden; }
+.modal-body { display: grid; grid-template-rows: auto 1fr; max-height: min(86vh, 900px); }
+.modal-head { display: flex; gap: 12px; align-items: start; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--line); }
+.modal-head h2 { margin: 0; font-size: 1.1rem; text-wrap: balance; }
+.modal-head p { margin: 2px 0 0; color: var(--muted); font-size: 0.85rem; }
+.modal-scroll { overflow-y: auto; padding: 16px 20px 22px; display: grid; gap: 16px; }
+.gloss { margin: 0; display: grid; gap: 14px; }
+.gloss dt { font-weight: 600; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.gloss dt small { font: 500 0.72rem var(--sans); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.gloss dd { margin: 2px 0 0; color: var(--muted); max-width: 65ch; }
+.gloss dd b { color: var(--fg); font-weight: 500; }
+.kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.kv div { border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+.kv span { display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.kv b { font: 600 1.05rem var(--mono); }
+.formula { font: 0.88rem/1.6 var(--mono); background: var(--accent-soft); border-radius: 6px; padding: 10px 12px; overflow-x: auto; white-space: nowrap; }
+.mini { overflow-x: auto; }
+.mini table { min-width: 0; font-size: 0.88rem; }
+.mini th, .mini td { padding: 6px 8px; }
+.mini th { position: static; }
+.mini tr.me td { background: var(--accent-soft); font-weight: 600; }
+.tag { font: 500 0.72rem var(--sans); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); }
+.tag.q { color: var(--up); border-color: var(--up); }
+.scale { position: relative; height: 46px; margin: 4px 8px 0; }
+.scale .axis { position: absolute; left: 0; right: 0; top: 22px; height: 2px; background: var(--line); }
+.scale .mk { position: absolute; top: 10px; width: 2px; height: 26px; transform: translateX(-1px); }
+.scale .mk span { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font: 0.7rem var(--mono); white-space: nowrap; color: var(--muted); }
+.scale .mk.lo span { top: 28px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
@@ -128,6 +164,9 @@ dialog::backdrop { background: rgb(0 0 0 / 0.35); }
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
         Weights
       </button>
+      <button class="icon-btn" id="open-info" type="button" aria-haspopup="dialog" aria-label="How the stats work" title="How the stats work">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      </button>
     </div>
   </header>
 
@@ -147,14 +186,63 @@ dialog::backdrop { background: rgb(0 0 0 / 0.35); }
     </table>
   </div>
 
-  <p class="foot">Each stat is converted to a z-score across that championship's alternates and flipped so higher is better, then
-    combined using your weights (normalized, so they don't have to add up to 100). A missing value counts as average.
-    Filtering to 1st or 2nd alternates ranks that group on its own.
-    Alt: the site's 1st or 2nd alternate; "?" marks the few BlueGolf sites that list two alternates tied with no order.
-    Δ is the move versus the default weights. Field z: gross vs that site's field (negative = better). WAGR SoF: ranked-player
-    strength of the site's field vs the season (positive = stronger). Field to-par: the site's mean to-par vs the season (negative = tougher).
-</p>
+  <p class="foot">Click any underlined number for its breakdown. The <b>i</b> button explains each stat.
+    Filtering to 1st or 2nd alternates ranks that group on its own.</p>
 </div>
+
+<dialog id="info" class="modal" aria-labelledby="info-title">
+  <div class="modal-body">
+    <div class="modal-head">
+      <div><h2 id="info-title">How the stats work</h2><p>Every stat compares a side with others, so a 64 at a hard course in a strong field can outrank a 63.</p></div>
+      <button class="icon-btn" type="button" data-close aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-scroll">
+      <dl class="gloss">
+        <dt>Score vs field <small>Field z</small></dt>
+        <dd>How many standard deviations the side's better-ball gross was below that day's field average:
+          <b>(gross − field mean) ÷ field std dev</b>. −2.0 means among the very best rounds of the day. Lower is better.</dd>
+        <dt>Score vs field, robust</dt>
+        <dd>The same idea using the field median and MAD (median absolute deviation) instead of mean and std dev, so a few
+          blow-up rounds don't make everyone else look better. Lower is better.</dd>
+        <dt>To-par vs season</dt>
+        <dd>The side's to-par as a z-score against every side that played that season, at every site. Compares across courses, but ignores how the day played. Lower is better.</dd>
+        <dt>Strokes from qualifying <small>Missed by</small></dt>
+        <dd>Gross minus the highest score that qualified at the site. <b>0</b> means the side tied the number and lost the
+          playoff, <b>1</b> means one shot out. Lower is better.</dd>
+        <dt>Score vs course rating</dt>
+        <dd>Gross minus the USGA course rating, the expected score of a scratch golfer. Better-ball scores run well under it, so compare sides with each other, not with zero. Lower is better.</dd>
+        <dt>WAGR strength of field <small>WAGR SoF</small></dt>
+        <dd>How many ranked amateurs (and pros) were in the site's field, using the World Amateur Golf Ranking in effect that week.
+          Each player is worth <b>1 ÷ √rank</b> points: #1 = 1.0, #100 = 0.1, #2,500 = 0.02, unranked = 0. Pros without a WAGR rank count as
+          #25 (50+ PGA Tour starts), #100 (any PGA Tour or 25+ Korn Ferry) or #500 (any Korn Ferry or 10+ PGA Tour Americas).
+          Points are averaged per side, then compared with that season's other qualifiers as a z-score. Higher is a stronger field.</dd>
+        <dt>Field scoring strength <small>Field to-par</small></dt>
+        <dd>The site's average to-par minus the season's average. Negative means the whole field went low that day,
+          so getting through took a better score. Lower is tougher.</dd>
+        <dt>Composite</dt>
+        <dd>Each stat is converted to a z-score among that season's alternates and flipped so higher is always better. The composite is the weighted average of those z-scores, using the weights in the Weights panel. Weights are scaled so they don't need to total 100. A missing value counts as average (0).</dd>
+        <dt>Δ</dt>
+        <dd>Places gained or lost compared with the default weights.</dd>
+        <dt>Alt</dt>
+        <dd>The site's 1st or 2nd alternate. "?" marks the few BlueGolf sites that list two alternates tied, with no order.</dd>
+      </dl>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="detail" class="modal" aria-labelledby="detail-title">
+  <div class="modal-body">
+    <div class="modal-head">
+      <div><h2 id="detail-title"></h2><p id="detail-sub"></p></div>
+      <button class="icon-btn" type="button" data-close aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-scroll" id="detail-body"></div>
+  </div>
+</dialog>
 
 <dialog id="settings" aria-labelledby="settings-title">
   <form method="dialog" class="drawer" id="weights-form">
@@ -197,7 +285,7 @@ const PRESETS = {
 const load = () => { try { return { ...DEFAULTS, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch { return { ...DEFAULTS }; } };
 const save = w => { try { localStorage.setItem(KEY, JSON.stringify(w)); } catch {} };
 
-let data = [], weights = load();
+let data = [], fields = null, shownById = {}, weights = load();
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const fmt = (v, d = 2, sign = true) => v == null ? '<span class="na" title="No data">–</span>' : (sign && v > 0 ? '+' : '') + v.toFixed(d);
 const toPar = v => v === 0 ? 'E' : v > 0 ? `+${v}` : `${v}`;
@@ -222,8 +310,78 @@ STATS.forEach(s => ['r-', 'n-'].forEach(p => $(p + s.key).addEventListener('inpu
 document.querySelectorAll('[data-preset]').forEach(b => b.addEventListener('click', () => setWeights(PRESETS[b.dataset.preset])));
 $('reset').addEventListener('click', () => setWeights(DEFAULTS));
 $('open-settings').addEventListener('click', () => $('settings').showModal());
+$('open-info').addEventListener('click', () => $('info').showModal());
+document.querySelectorAll('dialog.modal').forEach(d => d.addEventListener('click', e => { if (e.target === d || e.target.closest('[data-close]')) d.close(); }));
+$('rows').addEventListener('click', e => { const b = e.target.closest('button.cell'); if (b) openDetail(b.dataset.k, shownById[b.dataset.id]); });
 $('settings').addEventListener('click', e => { if (e.target === $('settings')) $('settings').close(); });
 ['season', 'alt', 'q'].forEach(id => $(id).addEventListener('input', render));
+
+// breakdowns behind the clickable numbers
+const cell = (k, r, html) => `<button type="button" class="cell" data-k="${k}" data-id="${r.side_id}" aria-label="Show breakdown">${html}</button>`;
+const kv = items => `<div class="kv">${items.map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join('')}</div>`;
+const n = (v, d = 2) => v == null ? '–' : (+v).toFixed(d);
+const sgn = (v, d = 2) => v == null ? '–' : (v > 0 ? '+' : '') + (+v).toFixed(d);
+const ord = k => k + ({ 1: 'st', 2: 'nd', 3: 'rd' }[k % 100 > 10 && k % 100 < 14 ? 0 : k % 10] || 'th');
+
+// gross positions on one shared scale: field mean, qualifying line, this side
+function scale(r) {
+  const pts = [[r.field_mean_gross, `mean ${n(r.field_mean_gross, 1)}`, 'var(--muted)', true],
+               [r.qualifying_score, `qualified ≤ ${r.qualifying_score}`, 'var(--accent)', false],
+               [r.gross, `this side ${r.gross}`, 'var(--under)', true]].filter(p => p[0] != null);
+  const lo = Math.min(...pts.map(p => p[0])) - 1.5, hi = Math.max(...pts.map(p => p[0])) + 1.5;
+  return `<div class="scale" aria-hidden="true"><div class="axis"></div>${pts.map(([v, label, c, low]) =>
+    `<div class="mk${low ? ' lo' : ''}" style="left:${(v - lo) / (hi - lo) * 100}%;background:${c}"><span>${label}</span></div>`).join('')}</div>`;
+}
+
+function openDetail(k, r) {
+  if (!r) return;
+  let title = '', body = '';
+  if (k === 'field') {
+    title = 'Score vs the field';
+    body = kv([['Gross (to par)', `${r.gross} (${toPar(r.to_par)})`], ['Finished', `${ord(r.rank_in_field)} of ${r.field_size_scored}`],
+               ['Qualifying score', r.qualifying_score ?? '–'], ['Spots', r.spots], ['Missed by', r.strokes_from_qualifying ?? '–'],
+               ['Field mean', n(r.field_mean_gross)], ['Field median', n(r.field_median_gross, 1)], ['Field std dev', n(r.field_stddev_gross)]])
+      + scale(r)
+      + `<div class="formula">Field z = (${r.gross} − ${n(r.field_mean_gross)}) ÷ ${n(r.field_stddev_gross)} = <b>${sgn(r.z_score)}</b><br>`
+      + `Robust z = (${r.gross} − ${n(r.field_median_gross, 1)}) ÷ (1.4826 × MAD) = <b>${sgn(r.robust_z)}</b><br>`
+      + `To-par vs season z = <b>${sgn(r.season_z_score)}</b> &nbsp;·&nbsp; Score vs course rating = <b>${sgn(r.score_vs_rating, 1)}</b></div>`;
+  } else if (k === 'wagr') {
+    title = 'WAGR strength of field';
+    const list = (fields || {})[r.qualifier_key] || [];
+    body = kv([['Sides in field', r.field_sides], ['Ranked amateurs', r.ranked_players], ['Pros (tier rank)', r.pro_players],
+               ['Best WAGR', r.best_rank ? '#' + r.best_rank.toLocaleString() : '–'], ['Points per side', n(r.wagr_points_per_side, 4)],
+               ['Season avg per side', n(r.season_points_per_side, 4)]])
+      + `<div class="formula">SoF z = (${n(r.wagr_points_per_side, 4)} − ${n(r.season_points_per_side, 4)}) ÷ ${n(r.season_points_sd, 4)} = <b>${sgn(r.wagr_strength_z)}</b></div>`
+      + (fields == null ? '<p class="na">Loading players…</p>' : list.length ? `<div class="mini"><table>
+          <thead><tr><th>Player</th><th class="num">Rank</th><th class="num">Points</th><th>Team</th><th class="num">Gross</th><th>Result</th></tr></thead>
+          <tbody>${list.map(p => `<tr class="${p.team_name === r.team_name ? 'me' : ''}">
+            <td>${esc(p.player_name)}</td>
+            <td class="num">${p.is_pro_rank ? `<span title="Pro without a WAGR rank, counted as #${p.pro_equiv_rank}">Pro #${p.pro_equiv_rank}</span>` : '#' + p.wagr_rank.toLocaleString()}</td>
+            <td class="num">${n(p.points, 3)}</td>
+            <td style="white-space:normal">${esc(p.team_name)}</td>
+            <td class="num">${p.gross ?? '–'}</td>
+            <td><span class="tag${p.outcome === 'qualified' ? ' q' : ''}">${esc(p.outcome.replace('_', ' '))}</span></td></tr>`).join('')}</tbody></table></div>`
+          : '<p class="na">No ranked players in this field.</p>');
+  } else if (k === 'par') {
+    title = 'Field scoring strength';
+    body = kv([['Field mean to-par', sgn(r.field_mean_to_par)], ['Season mean to-par', sgn(r.season_mean_to_par)], ['Difference', sgn(r.field_strength)]])
+      + `<div class="formula">Field to-par = ${sgn(r.field_mean_to_par)} − (${sgn(r.season_mean_to_par)}) = <b>${sgn(r.field_strength)}</b></div>`
+      + `<p class="na">${r.field_strength < 0 ? 'This field scored better than the season average, so getting through took a lower score.' : 'This field scored worse than the season average.'}</p>`;
+  } else {
+    title = `Composite ${sgn(r.score)} · rank ${r.rank}`;
+    const total = STATS.reduce((a, s) => a + (weights[s.key] || 0), 0) || 1;
+    body = `<div class="mini"><table><thead><tr><th>Stat</th><th class="num">Value</th><th class="num">z (higher = better)</th><th class="num">Weight</th><th class="num">Contribution</th></tr></thead><tbody>
+      ${STATS.map((s, i) => { const w = (weights[s.key] || 0) / total; return `<tr${w ? '' : ' class="na"'}>
+        <td><span class="dot" style="background:${COLORS[i]}"></span>${s.label}</td><td class="num">${r[s.key] == null ? '–' : sgn(r[s.key])}</td>
+        <td class="num">${sgn(r.z[s.key])}</td><td class="num">${Math.round(w * 100)}%</td><td class="num">${sgn(w * r.z[s.key], 3)}</td></tr>`; }).join('')}
+      <tr class="me"><td>Composite</td><td></td><td></td><td class="num">100%</td><td class="num">${sgn(r.score, 3)}</td></tr></tbody></table></div>
+      <p class="na">z compares the stat with this season's other alternates (in the current filter), flipped so higher is better. Contribution = weight × z.</p>`;
+  }
+  $('detail-title').textContent = title;
+  $('detail-sub').textContent = `${r.team_name} · ${r.site_name}, ${r.state} · ${date(r.qualifier_date)}`;
+  $('detail-body').innerHTML = body;
+  $('detail').showModal();
+}
 
 function render() {
   const total = STATS.reduce((a, s) => a + (weights[s.key] || 0), 0);
@@ -243,6 +401,7 @@ function render() {
   const season = data.filter(r => r.championship_year === year && (!altPick || r.alternate_number === +altPick));
   const base = Object.fromEntries(rank(season, DEFAULTS).map(r => [r.side_id, r.rank]));
   const ranked = rank(season, weights);
+  shownById = Object.fromEntries(ranked.map(r => [r.side_id, r]));
   const q = $('q').value.trim().toLowerCase();
   const shown = q ? ranked.filter(r => (r.team_name + ' ' + r.site_name + ' ' + r.state).toLowerCase().includes(q)) : ranked;
   const max = Math.max(...ranked.map(r => Math.abs(r.score)), 0.01);
@@ -258,15 +417,17 @@ function render() {
       <td>${r.alternate_number ? `<span class="alt${r.alternate_number === 1 ? ' a1' : ''}">${r.alternate_number === 1 ? '1st' : '2nd'}</span>` : '<span class="alt" title="Tied; order not published">?</span>'}</td>
       <td class="team">${esc(r.team_name)}</td>
       <td class="site">${esc(r.site_name)}<small>${esc(r.state)} · ${date(r.qualifier_date)} · ${r.field_size_scored} sides</small></td>
-      <td class="num">${r.gross} <span class="${r.to_par < 0 ? 'under' : ''}">(${toPar(r.to_par)})</span></td>
-      <td class="num" title="${r.qualifying_score == null ? '' : 'Qualifying score ' + r.qualifying_score}">${r.strokes_from_qualifying == null ? fmt(null) : r.strokes_from_qualifying}</td>
-      <td class="num">${fmt(r.z_score)}</td>
-      <td class="num">${fmt(r.wagr_strength_z)}</td>
-      <td class="num">${fmt(r.field_strength)}</td>
-      <td class="num"><span class="comp">${fmt(r.score)}<span class="track" aria-hidden="true"><i style="width:${r.score > 0 ? pct : 0}%"></i></span></span></td>
+      <td class="num">${cell('field', r, `${r.gross} <span class="${r.to_par < 0 ? 'under' : ''}">(${toPar(r.to_par)})</span>`)}</td>
+      <td class="num">${r.strokes_from_qualifying == null ? fmt(null) : cell('field', r, r.strokes_from_qualifying)}</td>
+      <td class="num">${cell('field', r, fmt(r.z_score))}</td>
+      <td class="num">${r.wagr_strength_z == null ? fmt(null) : cell('wagr', r, fmt(r.wagr_strength_z))}</td>
+      <td class="num">${cell('par', r, fmt(r.field_strength))}</td>
+      <td class="num"><span class="comp">${cell('comp', r, fmt(r.score))}<span class="track" aria-hidden="true"><i style="width:${r.score > 0 ? pct : 0}%"></i></span></span></td>
     </tr>`;
   }).join('') : `<tr><td colspan="11" class="empty">No alternates match “${esc(q)}”.</td></tr>`;
 }
+
+fetch('data/field_players.json').then(r => r.ok ? r.json() : {}).then(f => { fields = f; }).catch(() => { fields = {}; });
 
 fetch('data/alternates.json')
   .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
