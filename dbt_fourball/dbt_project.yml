@@ -31,6 +31,9 @@ models:
     marts:
       +materialized: table
       +schema: marts
+      # Fabric mirroring reads changes through streams, which need change tracking. dbt recreates
+      # each table on every build, so it has to be set again after every build.
+      +post-hook: "alter table {{ this }} set change_tracking = true"
 
 seeds:
   dbt_fourball:
