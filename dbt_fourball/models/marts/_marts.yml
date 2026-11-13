@@ -55,6 +55,16 @@ models:
     columns:
       - name: team_key
         data_tests: [unique, not_null]
+  - name: fct_field_player_rank
+    description: >
+      One row per player per side. WAGR rank in effect on the qualifier date, pro-equivalent rank from tour starts,
+      the better of the two (effective_rank) and strength-of-field points = 1/sqrt(effective_rank), unranked = 0.
+    columns:
+      - name: side_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments: {to: ref('fct_side_result'), field: side_id}
   - name: agg_qualifier_field_strength
     description: >
       One row per qualifier. WAGR strength of field using the ranking in effect on the qualifier date.
