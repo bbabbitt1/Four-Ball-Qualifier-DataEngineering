@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four-Ball Alternate Rankings</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one working column. Header + controls, a weight-mix bar (summary), then the ranked table (detail). Settings = right drawer. */
+:root {
+  --bg: #f5f7f4; --surface: #ffffff; --line: #d9e0d8; --fg: #16211b; --muted: #55625a;
+  --accent: #1f6b45; --accent-soft: #e2efe6; --under: #b3261e; --up: #1f7a46; --down: #a14a12;
+  --mix-1: #1f6b45; --mix-2: #3d8f8a; --mix-3: #6a7fb8; --mix-4: #b5893a; --mix-5: #8a5a9e; --mix-6: #c05a4a; --mix-7: #5b7a3a;
+  --sans: "Fira Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Fira Code", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1512; --surface: #161e1a; --line: #2a3530; --fg: #e4ebe6; --muted: #9aa8a0;
+  --accent: #5cc08a; --accent-soft: #1d3327; --under: #ff8a80; --up: #6fd49a; --down: #f0a36a;
+  --mix-1: #5cc08a; --mix-2: #5fb8b2; --mix-3: #8fa3e0; --mix-4: #d8ad5c; --mix-5: #b78ccb; --mix-6: #e58a7a; --mix-7: #9cbf6a;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f1512; --surface: #161e1a; --line: #2a3530; --fg: #e4ebe6; --muted: #9aa8a0;
+  --accent: #5cc08a; --accent-soft: #1d3327; --under: #ff8a80; --up: #6fd49a; --down: #f0a36a;
+  --mix-1: #5cc08a; --mix-2: #5fb8b2; --mix-3: #8fa3e0; --mix-4: #d8ad5c; --mix-5: #b78ccb; --mix-6: #e58a7a; --mix-7: #9cbf6a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 var(--sans); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 20px; }
+header { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; justify-content: space-between; }
+h1 { margin: 0; font-size: 1.75rem; line-height: 1.15; letter-spacing: -0.01em; text-wrap: balance; }
+.sub { margin: 4px 0 0; color: var(--muted); max-width: 65ch; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+label.field { display: grid; gap: 2px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+select, input[type="search"], input[type="number"] { font: 15px var(--sans); color: var(--fg); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; min-height: 40px; }
+input[type="search"] { width: min(240px, 100%); }
+button { font: 500 14px var(--sans); cursor: pointer; border-radius: 6px; min-height: 40px; padding: 8px 14px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--fg); transition: background-color .15s, border-color .15s; }
+button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--surface); display: inline-flex; gap: 8px; align-items: center; }
+button.primary:hover { filter: brightness(1.08); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.mix { display: grid; gap: 8px; }
+.mix-bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--line); }
+.mix-bar span { display: block; height: 100%; transition: flex-basis .25s; }
+.mix-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.85rem; color: var(--muted); }
+.mix-legend b { color: var(--fg); font: 500 0.85rem var(--mono); }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: 0; }
+
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 880px; }
+th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font: 600 0.72rem var(--sans); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); background: var(--surface); position: sticky; top: 0; }
+th.num, td.num { text-align: right; }
+td.num, .mono { font-family: var(--mono); font-size: 0.9rem; }
+tbody tr:hover { background: var(--accent-soft); }
+tbody tr:last-child td { border-bottom: 0; }
+.rank { font: 600 1rem var(--mono); width: 3ch; }
+.team { font-weight: 500; white-space: normal; min-width: 200px; }
+.site { white-space: normal; min-width: 200px; }
+.site small, .team small { display: block; color: var(--muted); font-size: 0.8rem; }
+.under { color: var(--under); }
+.delta { font: 500 0.82rem var(--mono); }
+.delta.up { color: var(--up); } .delta.down { color: var(--down); } .delta.same { color: var(--muted); }
+.na { color: var(--muted); }
+.alt { display: inline-block; min-width: 3.2ch; text-align: center; font: 600 0.75rem var(--mono); padding: 2px 6px; border-radius: 4px;
+  border: 1px solid var(--line); color: var(--muted); }
+.alt.a1 { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.comp { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.comp i { display: block; height: 6px; border-radius: 3px; background: var(--accent); }
+.comp .track { width: 64px; height: 6px; border-radius: 3px; background: var(--line); display: flex; }
+.empty { padding: 32px; text-align: center; color: var(--muted); }
+.foot { color: var(--muted); font-size: 0.82rem; max-width: 80ch; }
+
+dialog { margin: 0 0 0 auto; height: 100%; max-height: 100%; width: min(420px, 100%); border: 0; border-left: 1px solid var(--line);
+  padding: 0; background: var(--surface); color: var(--fg); }
+dialog::backdrop { background: rgb(0 0 0 / 0.35); }
+.drawer { display: grid; grid-template-rows: auto 1fr auto; height: 100%;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.drawer-head, .drawer-foot { padding: 18px 20px; display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+.drawer-head { border-bottom: 1px solid var(--line); }
+.drawer-foot { border-top: 1px solid var(--line); flex-wrap: wrap; }
+.drawer h2 { margin: 0; font-size: 1.1rem; }
+.weights { overflow-y: auto; padding: 8px 20px 16px; display: grid; gap: 4px; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 0 8px; }
+.presets button { min-height: 34px; padding: 5px 10px; font-size: 0.82rem; }
+.w { display: grid; grid-template-columns: 1fr 72px; gap: 4px 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.w label { font-weight: 500; }
+.w p { margin: 0; grid-column: 1 / -1; font-size: 0.8rem; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.w input[type="range"] { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); cursor: pointer; }
+.w input[type="number"] { min-height: 34px; padding: 4px 8px; text-align: right; font-family: var(--mono); }
+.total { font: 500 0.9rem var(--mono); }
+.icon-btn { min-height: 40px; min-width: 40px; padding: 0; display: inline-grid; place-items: center; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Four-Ball Alternate Rankings</h1>
+      <p class="sub" id="sub">Every site alternate in the U.S. Amateur Four-Ball qualifying, ranked nationally by a weighted mix of score and field strength.</p>
+    </div>
+    <div class="controls">
+      <label class="field" for="season">Championship
+        <select id="season"></select>
+      </label>
+      <label class="field" for="alt">Alternate
+        <select id="alt">
+          <option value="">1st + 2nd</option>
+          <option value="1">1st only</option>
+          <option value="2">2nd only</option>
+        </select>
+      </label>
+      <label class="field" for="q">Search
+        <input id="q" type="search" placeholder="Team or site">
+      </label>
+      <button class="primary" id="open-settings" type="button" aria-haspopup="dialog">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+        Weights
+      </button>
+    </div>
+  </header>
+
+  <section class="mix" aria-label="Current weighting">
+    <div class="mix-bar" id="mix-bar"></div>
+    <div class="mix-legend" id="mix-legend"></div>
+  </section>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th scope="col">#</th><th scope="col" title="Change vs default weights">Δ</th><th scope="col">Alt</th><th scope="col">Team</th><th scope="col">Qualifier</th>
+        <th class="num" scope="col">Score</th><th class="num" scope="col">Missed by</th><th class="num" scope="col">Field z</th>
+        <th class="num" scope="col">WAGR SoF</th><th class="num" scope="col">Field to-par</th><th class="num" scope="col">Composite</th>
+      </tr></thead>
+      <tbody id="rows"><tr><td colspan="11" class="empty">Loading alternates…</td></tr></tbody>
+    </table>
+  </div>
+
+  <p class="foot">Each stat is converted to a z-score across that championship's alternates and flipped so higher is better, then
+    combined using your weights (normalized, so they don't have to add up to 100). A missing value counts as average.
+    Filtering to 1st or 2nd alternates ranks that group on its own.
+    Alt: the site's 1st or 2nd alternate; "?" marks the few BlueGolf sites that list two alternates tied with no order.
+    Δ is the move versus the default weights. Field z: gross vs that site's field (negative = better). WAGR SoF: ranked-player
+    strength of the site's field vs the season (positive = stronger). Field to-par: the site's mean to-par vs the season (negative = tougher).
+</p>
+</div>
+
+<dialog id="settings" aria-labelledby="settings-title">
+  <form method="dialog" class="drawer" id="weights-form">
+    <div class="drawer-head">
+      <h2 id="settings-title">Ranking weights</h2>
+      <button class="icon-btn" value="close" aria-label="Close weights">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="weights">
+      <div class="presets" aria-label="Presets">
+        <button type="button" data-preset="default">Default</button>
+        <button type="button" data-preset="score">Score only</button>
+        <button type="button" data-preset="field">Field strength heavy</button>
+        <button type="button" data-preset="even">Equal</button>
+      </div>
+      <div id="weight-list"></div>
+    </div>
+    <div class="drawer-foot">
+      <span>Total <span class="total" id="total">100%</span></span>
+      <span style="display:flex;gap:8px">
+        <button type="button" id="reset">Reset</button>
+        <button class="primary" value="close">Done</button>
+      </span>
+    </div>
+  </form>
+</dialog>
+
+<script src="rank.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const KEY = 'alt-rank-weights';
+const COLORS = STATS.map((_, i) => `var(--mix-${i + 1})`);
+const PRESETS = {
+  default: DEFAULTS,
+  score: { z_score: 60, strokes_from_qualifying: 40 },
+  field: { z_score: 30, strokes_from_qualifying: 10, wagr_strength_z: 40, field_strength: 20 },
+  even: Object.fromEntries(STATS.map(s => [s.key, 15])),
+};
+const load = () => { try { return { ...DEFAULTS, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch { return { ...DEFAULTS }; } };
+const save = w => { try { localStorage.setItem(KEY, JSON.stringify(w)); } catch {} };
+
+let data = [], weights = load();
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmt = (v, d = 2, sign = true) => v == null ? '<span class="na" title="No data">–</span>' : (sign && v > 0 ? '+' : '') + v.toFixed(d);
+const toPar = v => v === 0 ? 'E' : v > 0 ? `+${v}` : `${v}`;
+const date = s => new Date(s + 'T12:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+// weight sliders
+$('weight-list').innerHTML = STATS.map((s, i) => `
+  <div class="w">
+    <label for="r-${s.key}"><span class="dot" style="background:${COLORS[i]}"></span>${s.label}</label>
+    <input id="n-${s.key}" type="number" min="0" max="100" step="1" aria-label="${s.label} weight, percent">
+    <input id="r-${s.key}" type="range" min="0" max="100" step="1">
+    <p><span>${s.note}</span><span id="e-${s.key}"></span></p>
+  </div>`).join('');
+
+const syncInputs = () => STATS.forEach(s => { $('r-' + s.key).value = $('n-' + s.key).value = weights[s.key] || 0; });
+const setWeights = w => { weights = { ...Object.fromEntries(STATS.map(s => [s.key, 0])), ...w }; save(weights); syncInputs(); render(); };
+STATS.forEach(s => ['r-', 'n-'].forEach(p => $(p + s.key).addEventListener('input', e => {
+  const v = Math.max(0, Math.min(100, Math.round(+e.target.value || 0)));
+  weights = { ...weights, [s.key]: v }; save(weights);
+  $((p === 'r-' ? 'n-' : 'r-') + s.key).value = v; render();
+})));
+document.querySelectorAll('[data-preset]').forEach(b => b.addEventListener('click', () => setWeights(PRESETS[b.dataset.preset])));
+$('reset').addEventListener('click', () => setWeights(DEFAULTS));
+$('open-settings').addEventListener('click', () => $('settings').showModal());
+$('settings').addEventListener('click', e => { if (e.target === $('settings')) $('settings').close(); });
+['season', 'alt', 'q'].forEach(id => $(id).addEventListener('input', render));
+
+function render() {
+  const total = STATS.reduce((a, s) => a + (weights[s.key] || 0), 0);
+  $('total').textContent = `${total}%`;
+  STATS.forEach((s, i) => {
+    const share = total ? (weights[s.key] || 0) / total * 100 : 0;
+    $('e-' + s.key).textContent = total !== 100 && weights[s.key] ? `counts as ${share.toFixed(0)}%` : '';
+  });
+  const active = STATS.map((s, i) => ({ s, i, w: weights[s.key] || 0 })).filter(x => x.w);
+  $('mix-bar').innerHTML = active.map(x => `<span style="flex-basis:${x.w / total * 100}%;background:${COLORS[x.i]}"></span>`).join('');
+  $('mix-legend').innerHTML = active.length
+    ? active.map(x => `<span><span class="dot" style="background:${COLORS[x.i]}"></span>${x.s.label} <b>${Math.round(x.w / total * 100)}%</b></span>`).join('')
+    : '<span>All weights are 0, so every alternate ties. Open Weights to set a mix.</span>';
+
+  const year = +$('season').value;
+  const altPick = $('alt').value;
+  const season = data.filter(r => r.championship_year === year && (!altPick || r.alternate_number === +altPick));
+  const base = Object.fromEntries(rank(season, DEFAULTS).map(r => [r.side_id, r.rank]));
+  const ranked = rank(season, weights);
+  const q = $('q').value.trim().toLowerCase();
+  const shown = q ? ranked.filter(r => (r.team_name + ' ' + r.site_name + ' ' + r.state).toLowerCase().includes(q)) : ranked;
+  const max = Math.max(...ranked.map(r => Math.abs(r.score)), 0.01);
+  const sites = new Set(season.map(r => r.site_name + r.qualifier_date)).size;
+  $('sub').textContent = `${season.length} ${altPick ? (altPick === '1' ? '1st' : '2nd') + ' ' : ''}alternates from ${sites} qualifying sites for the ${year} U.S. Amateur Four-Ball, ranked nationally by a weighted mix of score and field strength.`;
+
+  $('rows').innerHTML = shown.length ? shown.map(r => {
+    const d = base[r.side_id] - r.rank;
+    const delta = d > 0 ? `<span class="delta up" aria-label="up ${d}">▲${d}</span>` : d < 0 ? `<span class="delta down" aria-label="down ${-d}">▼${-d}</span>` : '<span class="delta same">–</span>';
+    const pct = Math.abs(r.score) / max * 100;
+    return `<tr>
+      <td class="rank">${r.rank}</td><td>${delta}</td>
+      <td>${r.alternate_number ? `<span class="alt${r.alternate_number === 1 ? ' a1' : ''}">${r.alternate_number === 1 ? '1st' : '2nd'}</span>` : '<span class="alt" title="Tied; order not published">?</span>'}</td>
+      <td class="team">${esc(r.team_name)}</td>
+      <td class="site">${esc(r.site_name)}<small>${esc(r.state)} · ${date(r.qualifier_date)} · ${r.field_size_scored} sides</small></td>
+      <td class="num">${r.gross} <span class="${r.to_par < 0 ? 'under' : ''}">(${toPar(r.to_par)})</span></td>
+      <td class="num" title="${r.qualifying_score == null ? '' : 'Qualifying score ' + r.qualifying_score}">${r.strokes_from_qualifying == null ? fmt(null) : r.strokes_from_qualifying}</td>
+      <td class="num">${fmt(r.z_score)}</td>
+      <td class="num">${fmt(r.wagr_strength_z)}</td>
+      <td class="num">${fmt(r.field_strength)}</td>
+      <td class="num"><span class="comp">${fmt(r.score)}<span class="track" aria-hidden="true"><i style="width:${r.score > 0 ? pct : 0}%"></i></span></span></td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="11" class="empty">No alternates match “${esc(q)}”.</td></tr>`;
+}
+
+fetch('data/alternates.json')
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(rows => {
+    data = rows;
+    const years = [...new Set(rows.map(r => r.championship_year))].sort((a, b) => b - a);
+    $('season').innerHTML = years.map(y => `<option value="${y}">${y} Four-Ball</option>`).join('');
+    syncInputs(); render();
+  })
+  .catch(e => { $('rows').innerHTML = `<tr><td colspan="11" class="empty">Couldn't load data/alternates.json (${esc(e.message)}). Run export_alternates.py and redeploy.</td></tr>`; });
+</script>
+</body>
+</html>
