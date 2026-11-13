@@ -34,13 +34,19 @@ COPY INTO INVENTORY ("V", "_FILE", "_LOADED_AT")
   FROM (SELECT $1, METADATA$FILENAME, METADATA$START_SCAN_TIME FROM @S3_BRONZE/inventory/)
   FILE_FORMAT = JSON_FMT FORCE = TRUE;
 
+-- WAGR: one file per ranking week, never changes once published. COPY's load history skips files already loaded.
+COPY INTO WAGR FROM @S3_BRONZE/wagr/
+  FILE_FORMAT = CSV_HEADER MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE
+  INCLUDE_METADATA = (_FILE = METADATA$FILENAME, _LOADED_AT = METADATA$START_SCAN_TIME);
+
 ------------------------------------------------------------------------
 -- Checks. Compare with the local CSVs (2026-11-10 baseline: 218 files / 10,108 rows; 190; 3,132).
 ------------------------------------------------------------------------
 SELECT 'scores' AS tbl, COUNT(DISTINCT _FILE) AS files, COUNT(*) AS row_count FROM SCORES
 UNION ALL SELECT 'courses', COUNT(DISTINCT _FILE), COUNT(*) FROM DIM_GOLF_COURSE
 UNION ALL SELECT 'holes',   COUNT(DISTINCT _FILE), COUNT(*) FROM DIM_GOLF_COURSE_HOLES
-UNION ALL SELECT 'inventory', COUNT(DISTINCT _FILE), COUNT(*) FROM INVENTORY;   -- 5 files / 5 rows
+UNION ALL SELECT 'inventory', COUNT(DISTINCT _FILE), COUNT(*) FROM INVENTORY    -- 5 files / 5 rows
+UNION ALL SELECT 'wagr', COUNT(DISTINCT _FILE), COUNT(*) FROM WAGR;   -- 2026-11-13: 68 files / 326,975 rows
 
 -- All should be 0; a non-zero means a header didn't match a column
 SELECT COUNT_IF("Pos." IS NULL AND "Pos" IS NULL) AS no_position,

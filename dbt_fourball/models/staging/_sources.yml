@@ -12,3 +12,5 @@ sources:
       - name: dim_golf_course_holes
       - name: inventory
         description: One row per season file (data/inventory/*.json). V:sites[] = every known site, incl. ones without results.
+      - name: wagr
+        description: Men's WAGR, one file per ranking week (wagr.py). All VARCHAR.

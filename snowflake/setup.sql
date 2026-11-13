@@ -82,6 +82,12 @@ CREATE TABLE IF NOT EXISTS DIM_GOLF_COURSE_HOLES (
 -- One row per inventory file (one per season); dbt flattens sites[]
 CREATE TABLE IF NOT EXISTS INVENTORY (V VARIANT, "_FILE" VARCHAR, "_LOADED_AT" TIMESTAMP_LTZ);
 
+-- One file per WAGR ranking week (wagr.py); one row per ranked man
+CREATE TABLE IF NOT EXISTS WAGR (
+  "WAGR_WEEK" VARCHAR, "PLAYER_ID" VARCHAR, "RANK" VARCHAR, "FIRST_NAME" VARCHAR, "LAST_NAME" VARCHAR,
+  "FULL_NAME" VARCHAR, "NATIONALITY" VARCHAR, "POINTS_AVG" VARCHAR,
+  "_FILE" VARCHAR, "_LOADED_AT" TIMESTAMP_LTZ);
+
 GRANT ALL ON ALL TABLES IN SCHEMA RAW.FOURBALL TO ROLE LOADER;
 
 ------------------------------------------------------------------------

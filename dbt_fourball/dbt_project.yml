@@ -31,3 +31,9 @@ models:
     marts:
       +materialized: table
       +schema: marts
+
+seeds:
+  dbt_fourball:
+    +schema: seeds
+    pro_experience:
+      +column_types: {pga_player_id: varchar, is_match: varchar}

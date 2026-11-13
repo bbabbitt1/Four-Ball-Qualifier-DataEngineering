@@ -55,3 +55,18 @@ models:
     columns:
       - name: team_key
         data_tests: [unique, not_null]
+  - name: agg_qualifier_field_strength
+    description: >
+      One row per qualifier. WAGR strength of field using the ranking in effect on the qualifier date.
+      Player points = 1/sqrt(rank), unranked = 0, both partners count. Unranked pros get an equivalent rank from tour
+      starts (seeds/pro_experience.csv, is_match = y): 50+ PGA Tour = #25; 1-49 PGA Tour or 25+ Korn Ferry = #100;
+      1-24 Korn Ferry or 10+ PGA Tour Americas = #500. wagr_strength_z compares points per side
+      with the same season's qualifiers (> 0 = stronger field).
+    columns:
+      - name: qualifier_key
+        data_tests: [unique, not_null]
+      - name: wagr_week
+        description: Ranking week used. Fails if wagr.py hasn't fetched that week.
+        data_tests:
+          - relationships:
+              arguments: {to: ref('stg_wagr'), field: wagr_week}

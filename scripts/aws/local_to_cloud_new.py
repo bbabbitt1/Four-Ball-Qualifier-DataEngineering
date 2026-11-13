@@ -27,3 +27,11 @@ for name in ("dim_golf_course.csv", "dim_golf_course_holes.csv"):
 for path in sorted((BRONZE.parent / "inventory").glob("*-fourball.json")):
     s3.upload_file(str(path), BUCKET, f"inventory/{path.name}")
     print(f"Uploaded {path.name} -> s3://{BUCKET}/inventory/{path.name}")
+
+# WAGR weekly rankings: published weeks never change, so only upload new files
+WAGR = BRONZE / "wagr"
+wagr_existing = {o["Key"] for p in s3.get_paginator("list_objects_v2").paginate(Bucket=BUCKET, Prefix="wagr/") for o in p.get("Contents", [])}
+for path in sorted(WAGR.glob("*.csv")):
+    if f"wagr/{path.name}" not in wagr_existing:
+        s3.upload_file(str(path), BUCKET, f"wagr/{path.name}")
+        print(f"Uploaded {path.name} -> s3://{BUCKET}/wagr/{path.name}")
