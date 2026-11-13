@@ -75,5 +75,17 @@ select
         when outcome_pass1 = 'unknown' and count_if(outcome_pass1 = 'qualified') over (partition by _file) > 0 then 'cut'
         else outcome_pass1
     end as outcome,
+    -- 1st / 2nd alternate from the label ("Alternate 1", "2nd Alternate", "First Alternate", ...).
+    -- BlueGolf "ALTERNATES - IN ORDER" has no number: order by score then position (a playoff shows as 2 vs 3);
+    -- a full tie (T3 / T3) stays null since row order isn't kept.
+    -- ponytail: the USGA API (2025+) has ALTERNATE_1 / ALTERNATE_2 and would settle those ties.
+    case when outcome_pass1 = 'alternate' then coalesce(
+        case
+            when regexp_instr(outcome_text, '(1st|first)[[:space:]]+alternate|alternate[[:space:]]+1') > 0 then 1
+            when regexp_instr(outcome_text, '(2nd|second)[[:space:]]+alternate|alternate[[:space:]]+2') > 0 then 2
+        end,
+        iff(count(*) over (partition by _file, outcome_pass1, gross, position) = 1,
+            rank() over (partition by _file, outcome_pass1 order by gross, position), null)
+    ) end as alternate_number,
     _file, _loaded_at
 from outcome_pass1

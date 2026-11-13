@@ -11,6 +11,13 @@ models:
           - accepted_values:
               arguments:
                 values: [qualified, alternate, cut, no_score, unknown]
+      - name: alternate_number
+        description: 1 or 2 for alternates (null = order not published, BlueGolf score tie), null for everyone else.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2]
+                quote: false
       - name: gross
         data_tests:
           - dbt_utils.accepted_range:

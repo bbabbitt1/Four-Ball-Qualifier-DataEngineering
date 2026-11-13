@@ -9,7 +9,7 @@ with f as (
 
 select
     f.side_id, f.team_key, f.team_name, f.qualifier_key, f.course_id, f.championship_year, f.qualifier_date,
-    f.gross, f.to_par, f.outcome,
+    f.gross, f.to_par, f.outcome, f.alternate_number,
 
     -- vs own field (same course, same day)
     q.field_size_scored,
