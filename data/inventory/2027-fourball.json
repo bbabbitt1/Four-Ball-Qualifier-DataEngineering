@@ -608,7 +608,7 @@
       "course_id": "bradenton-country-club-fl",
       "scoring_url": "https://www.fsga.org/Tournament/Results/fe578c3c-64ef-4370-85eb-2d892ef52670?boolQual=false",
       "platform": "other",
-      "usga_field_size_players": 0,
+      "usga_field_size_players": 88,
       "status": "manual",
       "rows": 0,
       "csv": null
@@ -622,7 +622,7 @@
       "scoring_url": "https://ncga.bluegolf.com/bluegolf/ncga26/event/ncga26149/contest/1/leaderboard.htm",
       "platform": "bluegolf",
       "usga_field_size_players": 0,
-      "status": "upcoming",
+      "status": "source_gone",
       "rows": 0,
       "csv": null
     },
@@ -635,9 +635,9 @@
       "scoring_url": "https://www.golfgenius.com/pages/5850302",
       "platform": "golfgenius",
       "usga_field_size_players": 0,
-      "status": "upcoming",
-      "rows": 0,
-      "csv": null
+      "status": "scraped",
+      "rows": 38,
+      "csv": "data/bronze/scores/2027-fourball/2026-11-16_the-ledges-golf-club-ut.csv"
     },
     {
       "qualifier_date": "2026-11-17",
@@ -648,7 +648,7 @@
       "scoring_url": "https://scaga.bluegolf.com/bluegolf/scaga26/event/scaga269/contest/1/leaderboard.htm",
       "platform": "bluegolf",
       "usga_field_size_players": 0,
-      "status": "upcoming",
+      "status": "source_gone",
       "rows": 0,
       "csv": null
     },
@@ -658,8 +658,8 @@
       "city": "Fresno",
       "state": "CA",
       "course_id": "san-joaquin-country-club-ca",
-      "scoring_url": "",
-      "platform": null,
+      "scoring_url": "https://ncga.bluegolf.com/bluegolf/ncga26/event/ncga26148/pairings.htm?r=59fa8aa5-aeef-4c90-9afa-7d4407993ccc",
+      "platform": "bluegolf",
       "usga_field_size_players": 0,
       "status": "upcoming",
       "rows": 0,
@@ -671,8 +671,8 @@
       "city": "Sacramento",
       "state": "CA",
       "course_id": "del-paso-country-club-ca",
-      "scoring_url": "",
-      "platform": null,
+      "scoring_url": "https://ncga.bluegolf.com/bluegolf/ncga26/event/ncga26150/pairings.htm?r=c8639729-f140-4b13-8fc6-6c660ec0eb78",
+      "platform": "bluegolf",
       "usga_field_size_players": 0,
       "status": "upcoming",
       "rows": 0,
@@ -684,19 +684,20 @@
       "city": "Chula Vista",
       "state": "CA",
       "course_id": "enagic-golf-club-at-eastlake-ca",
-      "scoring_url": "",
-      "platform": null,
+      "scoring_url": "https://www.golfgenius.com/pages/5751670",
+      "platform": "golfgenius",
       "usga_field_size_players": 0,
       "status": "upcoming",
       "rows": 0,
       "csv": null
     }
   ],
-  "updated_at": "2026-11-09T14:17:36",
-  "latest_scraped_date": "2026-11-02",
+  "updated_at": "2026-11-17T14:36:59",
+  "latest_scraped_date": "2026-11-16",
   "status_counts": {
     "manual": 5,
-    "scraped": 42,
-    "upcoming": 6
+    "scraped": 43,
+    "source_gone": 2,
+    "upcoming": 3
   }
 }
