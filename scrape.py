@@ -41,11 +41,15 @@ def platform(url):
 def fetch_usga(years, browser):
     """USGA's qualifying JSON sits behind Akamai, so call it from a real (headed) Chrome page."""
     pg = browser.new_page()
-    pg.goto(USGA_ORIGIN, wait_until="domcontentloaded", timeout=90000)
+    sniffed = []  # no .env key? take the one the USGA page sends on its own ace-api calls
+    pg.on("request", lambda r: "ace-api.usga.org" in r.url and r.headers.get("ocp-apim-subscription-key") and sniffed.append(r.headers["ocp-apim-subscription-key"]))
+    pg.goto(USGA_ORIGIN, wait_until="networkidle", timeout=90000)
+    key = USGA_KEY or (sniffed[0] if sniffed else None)
+    if not key: print("No USGA key in .env and none seen on the USGA page")
     out = {}
     for y in years:
         status, text = pg.evaluate("""async ([u, k]) => { const r = await fetch(u, {headers: {'Ocp-Apim-Subscription-Key': k}});
-                                       return [r.status, await r.text()]; }""", [USGA_API.format(y), USGA_KEY])
+                                       return [r.status, await r.text()]; }""", [USGA_API.format(y), key])
         if status != 200:
             print(f"{y}: USGA API returned {status}, skipping"); continue
         out[y] = json.loads(text)
