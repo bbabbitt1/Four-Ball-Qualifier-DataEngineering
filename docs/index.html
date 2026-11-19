@@ -136,21 +136,35 @@ dialog.modal { margin: auto; width: min(680px, calc(100% - 32px)); max-height: m
 .scale .mk { position: absolute; top: 10px; width: 2px; height: 26px; transform: translateX(-1px); }
 .scale .mk span { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font: 0.7rem var(--mono); white-space: nowrap; color: var(--muted); }
 .scale .mk.lo span { top: 28px; }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+.tabs a { display: inline-flex; align-items: center; min-height: 40px; padding: 8px 14px; margin-bottom: -1px; color: var(--muted);
+  text-decoration: none; font-weight: 500; border-bottom: 2px solid transparent; }
+.tabs a:hover { color: var(--fg); }
+.tabs a[aria-current="page"] { color: var(--fg); border-bottom-color: var(--accent); }
+body[data-view="sites"] [data-only="alternates"], body[data-view="alternates"] [data-only="sites"] { display: none !important; }
+.sof { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; align-items: center; max-width: 640px; }
+.sof label { font-weight: 500; }
+.sof input { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); cursor: pointer; }
+.sof p { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: 0.85rem; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
-<body>
+<body data-view="sites">
 <div class="wrap">
+  <nav class="tabs" aria-label="Pages">
+    <a href="#sites" data-tab="sites">Sites</a>
+    <a href="#alternates" data-tab="alternates">Alternates</a>
+  </nav>
   <header>
     <div>
-      <h1>Four-Ball Alternate Rankings</h1>
+      <h1 id="title">Four-Ball Site Rankings</h1>
       <p class="sub" id="sub">Every site alternate in the U.S. Amateur Four-Ball qualifying, ranked nationally by a weighted mix of score and field strength.</p>
     </div>
     <div class="controls">
       <label class="field" for="season">Championship
         <select id="season"></select>
       </label>
-      <label class="field" for="alt">Alternate
+      <label class="field" for="alt" data-only="alternates">Alternate
         <select id="alt">
           <option value="">1st + 2nd</option>
           <option value="1">1st only</option>
@@ -160,7 +174,8 @@ dialog.modal { margin: auto; width: min(680px, calc(100% - 32px)); max-height: m
       <label class="field" for="q">Search
         <input id="q" type="search" placeholder="Team or site">
       </label>
-      <button class="primary" id="open-settings" type="button" aria-haspopup="dialog">
+      <button class="primary" id="open-sites" type="button" aria-haspopup="dialog" data-only="sites">Site ranking</button>
+      <button class="primary" id="open-settings" type="button" aria-haspopup="dialog" data-only="alternates">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
         Weights
       </button>
@@ -170,12 +185,30 @@ dialog.modal { margin: auto; width: min(680px, calc(100% - 32px)); max-height: m
     </div>
   </header>
 
-  <section class="mix" aria-label="Current weighting">
+  <section class="sof" data-only="sites" aria-label="Strength of field adjustment">
+    <label for="sof">Strength-of-field adjustment</label>
+    <span class="total" id="sof-val"></span>
+    <input id="sof" type="range" min="0" max="100" step="5">
+    <p>0% ranks sites only by sides per spot, which is how the USGA orders sites for alternates. Moving the slider right gives more weight to WAGR strength of field.</p>
+  </section>
+
+  <div class="table-wrap" data-only="sites">
+    <table>
+      <thead><tr>
+        <th scope="col">#</th><th scope="col" title="Change vs pure sides per spot (0%)">Δ</th><th scope="col">Alt</th><th scope="col">Team</th>
+        <th scope="col">Site</th><th class="num" scope="col">Sides</th><th class="num" scope="col">Spots</th><th class="num" scope="col">Sides / spot</th>
+        <th class="num" scope="col">WAGR SoF</th><th class="num" scope="col">Site rating</th>
+      </tr></thead>
+      <tbody id="site-rows"><tr><td colspan="10" class="empty">Loading sites…</td></tr></tbody>
+    </table>
+  </div>
+
+  <section class="mix" aria-label="Current weighting" data-only="alternates">
     <div class="mix-bar" id="mix-bar"></div>
     <div class="mix-legend" id="mix-legend"></div>
   </section>
 
-  <div class="table-wrap">
+  <div class="table-wrap" data-only="alternates">
     <table>
       <thead><tr>
         <th scope="col">#</th><th scope="col" title="Change vs default weights">Δ</th><th scope="col">Alt</th><th scope="col">Team</th><th scope="col">Qualifier</th>
@@ -186,7 +219,8 @@ dialog.modal { margin: auto; width: min(680px, calc(100% - 32px)); max-height: m
     </table>
   </div>
 
-  <p class="foot">Click any underlined number for its breakdown. The <b>i</b> button explains each stat.
+  <p class="foot" data-only="sites">Sides counts every side that entered, including withdrawals and no-shows. Sites with no published qualifying spots are left out.</p>
+  <p class="foot" data-only="alternates">Click any underlined number for its breakdown. The <b>i</b> button explains each stat.
     Filtering to 1st or 2nd alternates ranks that group on its own.</p>
 </div>
 
@@ -200,6 +234,11 @@ dialog.modal { margin: auto; width: min(680px, calc(100% - 32px)); max-height: m
     </div>
     <div class="modal-scroll">
       <dl class="gloss">
+        <dt>Sides per spot <small>Sites page</small></dt>
+        <dd>Sides that entered the site divided by its qualifying spots. The USGA gives out alternate spots site by site, starting with the sites that had the most sides per spot.</dd>
+        <dt>Rating <small>Sites page</small></dt>
+        <dd><b>(1 − adj) × z(sides per spot) + adj × z(WAGR SoF)</b>, where each z compares the site with that season's other sites and adj is the slider value.
+          At 0% this is just sides per spot. Δ shows places gained or lost compared with 0%.</dd>
         <dt>Score vs field <small>Field z</small></dt>
         <dd>How many standard deviations the side's better-ball gross was below that day's field average:
           <b>(gross − field mean) ÷ field std dev</b>. −2.0 means among the very best rounds of the day. Lower is better.</dd>
@@ -314,7 +353,70 @@ $('open-info').addEventListener('click', () => $('info').showModal());
 document.querySelectorAll('dialog.modal').forEach(d => d.addEventListener('click', e => { if (e.target === d || e.target.closest('[data-close]')) d.close(); }));
 $('rows').addEventListener('click', e => { const b = e.target.closest('button.cell'); if (b) openDetail(b.dataset.k, shownById[b.dataset.id]); });
 $('settings').addEventListener('click', e => { if (e.target === $('settings')) $('settings').close(); });
-['season', 'alt', 'q'].forEach(id => $(id).addEventListener('input', render));
+$('alt').addEventListener('input', render);
+['season', 'q'].forEach(id => $(id).addEventListener('input', () => renderView()));
+
+// pages: #sites (default) | #alternates
+let sites = [], sof = (() => { try { return +(localStorage.getItem('site-sof') ?? 25); } catch { return 25; } })();
+const view = () => location.hash === '#alternates' ? 'alternates' : 'sites';
+const renderView = () => {
+  const v = view();
+  document.body.dataset.view = v;
+  document.querySelectorAll('[data-tab]').forEach(a => a.dataset.tab === v ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+  $('title').textContent = v === 'sites' ? 'Four-Ball Site Rankings' : 'Four-Ball Alternate Rankings';
+  document.title = $('title').textContent;
+  v === 'sites' ? renderSites() : render();
+};
+window.addEventListener('hashchange', renderView);
+document.body.dataset.view = view();
+$('sof').value = sof;
+const deltaHtml = d => d > 0 ? `<span class="delta up" aria-label="up ${d}">▲${d}</span>` : d < 0 ? `<span class="delta down" aria-label="down ${-d}">▼${-d}</span>` : '<span class="delta same">–</span>';
+$('open-sites').addEventListener('click', () => openSites());
+$('site-rows').addEventListener('click', e => { const b = e.target.closest('button[data-site]'); if (b) openSites(b.dataset.site); });
+
+// pop-out: the site ranking behind the call order. key = site to highlight.
+function openSites(key) {
+  const year = +$('season').value, season = sites.filter(r => r.championship_year === year);
+  const base = Object.fromEntries(rankSites(season, 0).map(r => [r.qualifier_key, r.rank]));
+  $('detail-title').textContent = `${year} Four-Ball site ranking`;
+  $('detail-sub').textContent = `${season.length} sites by sides per spot${sof ? ` with a ${sof}% strength-of-field adjustment` : ''}. Δ is the change vs sides per spot alone.`;
+  $('detail-body').innerHTML = `<div class="mini"><table>
+    <thead><tr><th>#</th><th>Δ</th><th>Site</th><th class="num">Sides</th><th class="num">Spots</th><th class="num">Sides / spot</th><th class="num">WAGR SoF</th><th class="num">Rating</th></tr></thead>
+    <tbody>${rankSites(season, sof).map(s => `<tr${s.qualifier_key === key ? ' class="me"' : ''}>
+      <td>${s.rank}</td><td>${deltaHtml(base[s.qualifier_key] - s.rank)}</td>
+      <td style="white-space:normal">${esc(s.site_name)}<br><small class="na">${esc(s.state)} · ${date(s.qualifier_date)}</small></td>
+      <td class="num">${s.field_sides}</td><td class="num">${s.spots}</td><td class="num">${n(s.sides_per_spot, 1)}</td>
+      <td class="num">${fmt(s.wagr_strength_z)}</td><td class="num">${fmt(s.score)}</td></tr>`).join('')}</tbody></table></div>`;
+  $('detail').showModal();
+  $('detail-body').querySelector('tr.me')?.scrollIntoView({ block: 'center' });
+}
+$('sof').addEventListener('input', e => { sof = +e.target.value; try { localStorage.setItem('site-sof', sof); } catch {} renderSites(); });
+
+function renderSites() {
+  $('sof-val').textContent = `${sof}%`;
+  const year = +$('season').value;
+  const season = sites.filter(r => r.championship_year === year);
+  const alts = {};
+  data.filter(r => r.championship_year === year)
+    .sort((a, b) => (a.alternate_number ?? 9) - (b.alternate_number ?? 9) || a.gross - b.gross)
+    .forEach(r => (alts[r.qualifier_key] ||= []).push(r));
+  const base = Object.fromEntries(alternateOrder(rankSites(season, 0), alts).map(r => [r.side_id, r.order]));
+  const ordered = alternateOrder(rankSites(season, sof), alts);
+  const q = $('q').value.trim().toLowerCase();
+  const shown = q ? ordered.filter(r => (r.team_name + ' ' + r.site_name + ' ' + r.state).toLowerCase().includes(q)) : ordered;
+  $('sub').textContent = `${ordered.length} alternates from ${season.length} qualifying sites for the ${year} U.S. Amateur Four-Ball, in call order: each site's 1st alternate by site rank, then each site's 2nd. Sites are ranked by sides per spot${sof ? ` with a ${sof}% strength-of-field adjustment` : ''}.`;
+  $('site-rows').innerHTML = shown.length ? shown.map(r => {
+    const s = r.site;
+    return `<tr>
+      <td class="rank">${r.order}</td><td>${deltaHtml(base[r.side_id] - r.order)}</td>
+      <td><span class="alt${r.slot === 1 ? ' a1' : ''}"${r.alternate_number ? '' : ' title="Tied at the site; order not published, ranked by score"'}>${r.slot === 1 ? '1st' : '2nd'}${r.alternate_number ? '' : '?'}</span></td>
+      <td class="team">${esc(r.team_name)}<small>${r.gross} (${toPar(r.to_par)})</small></td>
+      <td class="site">${esc(s.site_name)}<small><button type="button" class="cell" data-site="${s.qualifier_key}" aria-label="Show site ranking">Site #${s.rank}</button> ·${esc(s.state)} · ${date(s.qualifier_date)}</small></td>
+      <td class="num">${s.field_sides}</td><td class="num">${s.spots}</td><td class="num">${n(s.sides_per_spot, 1)}</td>
+      <td class="num">${fmt(s.wagr_strength_z)}</td><td class="num">${fmt(s.score)}</td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="10" class="empty">${season.length ? `No alternates match “${esc(q)}”.` : 'No site data. Run export_alternates.py and redeploy.'}</td></tr>`;
+}
 
 // breakdowns behind the clickable numbers
 const cell = (k, r, html) => `<button type="button" class="cell" data-k="${k}" data-id="${r.side_id}" aria-label="Show breakdown">${html}</button>`;
@@ -429,15 +531,18 @@ function render() {
 
 fetch('data/field_players.json').then(r => r.ok ? r.json() : {}).then(f => { fields = f; }).catch(() => { fields = {}; });
 
-fetch('data/alternates.json')
-  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-  .then(rows => {
-    data = rows;
+const getJson = f => fetch(f).then(r => { if (!r.ok) throw new Error(`${f}: ${r.status}`); return r.json(); });
+Promise.all([getJson('data/alternates.json'), getJson('data/sites.json')])
+  .then(([rows, siteRows]) => {
+    data = rows; sites = siteRows;
     const years = [...new Set(rows.map(r => r.championship_year))].sort((a, b) => b - a);
     $('season').innerHTML = years.map(y => `<option value="${y}">${y} Four-Ball</option>`).join('');
-    syncInputs(); render();
+    syncInputs(); renderView();
   })
-  .catch(e => { $('rows').innerHTML = `<tr><td colspan="11" class="empty">Couldn't load data/alternates.json (${esc(e.message)}). Run export_alternates.py and redeploy.</td></tr>`; });
+  .catch(e => {
+    $('rows').innerHTML = `<tr><td colspan="11" class="empty">Couldn't load data (${esc(e.message)}). Run export_alternates.py and redeploy.</td></tr>`;
+    $('site-rows').innerHTML = `<tr><td colspan="10" class="empty">Couldn't load data (${esc(e.message)}). Run export_alternates.py and redeploy.</td></tr>`;
+  });
 </script>
 </body>
 </html>

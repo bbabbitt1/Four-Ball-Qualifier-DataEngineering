@@ -2,6 +2,7 @@
 
 alternates.json     one row per alternate side, with the field context the page's breakdowns show
 field_players.json  {qualifier_key: [rated players in that field]} for the WAGR strength-of-field breakdown
+sites.json          one row per site with spots: sides per spot + WAGR SoF for the site ranking page
 """
 import json
 from pathlib import Path
@@ -41,6 +42,19 @@ order by p.qualifier_key, p.points desc
 """
 
 
+SITES = """
+select q.qualifier_key, q.championship_year, q.qualifier_date, q.site_name, q.state,
+       coalesce(fs.field_sides, q.field_size) as field_sides, a.field_size_scored, a.spots, a.qualifying_score,
+       coalesce(fs.field_sides, q.field_size) / a.spots as sides_per_spot,
+       fs.wagr_strength_z, fs.ranked_players, fs.best_rank
+from dim_qualifier q
+join agg_qualifier_score_stats a using (qualifier_key)
+left join agg_qualifier_field_strength fs using (qualifier_key)
+where a.spots > 0
+order by q.championship_year, q.qualifier_date
+"""
+
+
 def to_json(v):
     return float(v) if hasattr(v, "is_finite") else v.isoformat() if hasattr(v, "isoformat") else v
 
@@ -58,14 +72,15 @@ def main(target="dev"):
         account=p["account"], user=p["user"], role=p["role"], warehouse=p["warehouse"],
         database=p["database"], schema=p["schema"], authenticator="SNOWFLAKE_JWT", private_key_file=p["private_key_path"],
     ) as con:
-        alternates, players = fetch(con, ALTERNATES), fetch(con, FIELD_PLAYERS)
+        alternates, players, sites = fetch(con, ALTERNATES), fetch(con, FIELD_PLAYERS), fetch(con, SITES)
     fields = {}
     for r in players:
         fields.setdefault(r.pop("qualifier_key"), []).append(r)
     out = Path(__file__).parent / "docs/data"
     (out / "alternates.json").write_text(json.dumps(alternates, indent=1))
     (out / "field_players.json").write_text(json.dumps(fields, separators=(",", ":")))
-    print(f"{len(alternates)} alternates, {len(players)} rated players in {len(fields)} fields -> {out}")
+    (out / "sites.json").write_text(json.dumps(sites, indent=1))
+    print(f"{len(alternates)} alternates, {len(sites)} sites, {len(players)} rated players in {len(fields)} fields -> {out}")
 
 
 if __name__ == "__main__":

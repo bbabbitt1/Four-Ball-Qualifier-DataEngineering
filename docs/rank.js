@@ -32,4 +32,24 @@ const rank = (rows, weights) => {
     .map((r, i) => ({ ...r, rank: i + 1 }));
 };
 
-if (typeof module !== 'undefined') module.exports = { STATS, DEFAULTS, zScores, rank };
+// Site order for handing out alternates: sides per spot (more sides chasing each spot ranks higher),
+// blended with WAGR strength of field. sof = 0..100, the SoF share of the blend. Missing SoF -> 0 (neutral).
+const zOf = vals => {
+  const v = vals.filter(x => x != null), m = v.reduce((a, b) => a + b, 0) / (v.length || 1);
+  const sd = Math.sqrt(v.reduce((a, x) => a + (x - m) ** 2, 0) / ((v.length - 1) || 1)) || 1;
+  return vals.map(x => x == null ? 0 : (x - m) / sd);
+};
+const rankSites = (rows, sof) => {
+  const a = sof / 100, zr = zOf(rows.map(r => r.sides_per_spot)), zs = zOf(rows.map(r => r.wagr_strength_z));
+  return rows
+    .map((r, i) => ({ ...r, zr: zr[i], zs: zs[i], score: (1 - a) * zr[i] + a * zs[i] }))
+    .sort((x, y) => y.score - x.score || y.sides_per_spot - x.sides_per_spot)
+    .map((r, i) => ({ ...r, rank: i + 1 }));
+};
+
+// Call order: every site's 1st alternate in site-rank order, then every site's 2nd. alts: {qualifier_key: [1st, 2nd]}.
+const alternateOrder = (rankedSites, alts) => [0, 1]
+  .flatMap(k => rankedSites.flatMap(s => alts[s.qualifier_key]?.[k] ? [{ ...alts[s.qualifier_key][k], site: s, slot: k + 1 }] : []))
+  .map((r, i) => ({ ...r, order: i + 1 }));
+
+if (typeof module !== 'undefined') module.exports = { STATS, DEFAULTS, zScores, rank, rankSites, alternateOrder };
